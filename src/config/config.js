@@ -1,4 +1,4 @@
-const config = {
+export const config = {
     titles: {
         employeesList: {
             ru: "Список сотрудников"
@@ -36,7 +36,5 @@ const config = {
         totalCost: {
             ru: "Итого"
         }
-    }
+    },
 }
-
-export default config
