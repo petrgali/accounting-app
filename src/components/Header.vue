@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import preset from "../config/config";
+import { config } from "../config/config";
 export default {
   data() {
     return {
-      namespace: preset.titles,
+      namespace: config.titles,
     };
   },
 };
