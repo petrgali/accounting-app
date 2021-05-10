@@ -1,4 +1,4 @@
-export const rawData = [
+export const data = [
     {
         id: 1618,
         name: "Петр",

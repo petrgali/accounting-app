@@ -55,7 +55,7 @@
         :key="person.id"
         @click="selectRow"
         @contextmenu.prevent="ctxMenu"
-        @dblclick="doubleClickHandler"
+        @dblclick="$emit(`openPerson`, person.id)"
       >
         <TableRow :person="person" />
       </li>
@@ -64,15 +64,15 @@
 </template>
 
 <script>
-import { rawData } from "../config/dummyData";
 import TableRow from "./EmpoyeesTableRow";
 import { config } from "../config/config";
 export default {
   components: { TableRow },
+  props: ["rawData"],
   data() {
     return {
       titles: config.titles,
-      data: rawData,
+      data: this.rawData,
       highlighted: null,
       sort: {
         name: false,
@@ -98,7 +98,7 @@ export default {
       this.highlighted = null;
     },
     ctxMenu(e) {
-      if (this.getRowId(e) === this.highlighted) alert(this.highlighted);
+      if (this.getRowId(e) === this.highlighted) confirm(this.highlighted);
     },
     doubleClickHandler(e) {
       alert(e.target);
@@ -146,17 +146,17 @@ export default {
       if (this.filterText)
         switch (this.filterSelect) {
           case this.titles.fullName.ru:
-            this.data = rawData.filter((person) =>
+            this.data = this.$props.rawData.filter((person) =>
               person.secondName.toLowerCase().includes(this.filterText)
             );
             break;
           case this.titles.countValue.ru:
-            this.data = rawData.filter((person) =>
+            this.data = this.$props.rawData.filter((person) =>
               this.filterWithOperator(person.goods.length, +this.filterText)
             );
             break;
           case this.titles.amount.ru:
-            this.data = rawData.filter((person) =>
+            this.data = this.$props.rawData.filter((person) =>
               this.filterWithOperator(
                 this.getTotalAmount(person),
                 +this.filterText
@@ -164,7 +164,7 @@ export default {
             );
         }
       else {
-        this.data = rawData;
+        this.data = this.$props.rawData;
       }
     },
   },
@@ -178,6 +178,7 @@ export default {
   margin-right: auto;
   padding-left: 10px;
   padding-right: 10px;
+  z-index: 1;
 }
 h2 {
   font-size: 26px;
@@ -215,7 +216,7 @@ h2 small {
   display: flex;
   width: 80%;
   justify-content: space-between;
-  margin: auto auto 25px;
+  margin: auto auto;
 }
 .responsive-table .table-header {
   background-color: #95a5a6;
@@ -226,6 +227,7 @@ h2 small {
 }
 .responsive-table .table-row {
   cursor: pointer;
+  border-top: 2px solid lightgrey;
 }
 .responsive-table .col-1 {
   flex-basis: 40%;
@@ -236,15 +238,14 @@ h2 small {
 .responsive-table .col-3 {
   flex-basis: 40%;
 }
-/* .responsive-table .col-4 {
-  flex-basis: 25%;
-} */
+
 @media all and (max-width: 767px) {
   .responsive-table .table-header {
     display: none;
   }
   .responsive-table li {
     display: block;
+    
   }
   .responsive-table .col {
     flex-basis: 100%;

@@ -1,19 +1,14 @@
 <template>
   <div class="title container">
     <div class="title text">
-      <h2>{{ namespace.employeesList.ru }}</h2>
+      <h2>{{ title }}</h2>
     </div>
   </div>
 </template>
 
 <script>
-import { config } from "../config/config";
 export default {
-  data() {
-    return {
-      namespace: config.titles,
-    };
-  },
+  props: ["title"],
 };
 </script>
 
