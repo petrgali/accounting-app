@@ -6,19 +6,34 @@
         <div class="titles">
           <div v-if="addNew">
             <div class="item">
-              Фамилия:<input type="text" v-model="newPerson.secondName" />
+              {{ title.secondName.ru }}:<input
+                type="text"
+                v-model="newPerson.secondName"
+              />
             </div>
             <div class="item">
-              Имя:<input type="text" v-model="newPerson.name" />
+              {{ title.firstName.ru }}:<input
+                type="text"
+                v-model="newPerson.name"
+              />
             </div>
             <div class="item">
-              Отчество:<input type="text" v-model="newPerson.patronName" />
+              {{ title.patronName.ru }}:<input
+                type="text"
+                v-model="newPerson.patronName"
+              />
             </div>
           </div>
           <div v-if="!addNew">
-            <div class="item">Фамилия: {{ person.secondName }}</div>
-            <div class="item">Имя: {{ person.name }}</div>
-            <div class="item">Отчество: {{ person.patronName }}</div>
+            <div class="item">
+              {{ title.secondName.ru }}: {{ person.secondName }}
+            </div>
+            <div class="item">
+              {{ title.firstName.ru }}: {{ person.name }}
+              </div>
+            <div class="item">
+              {{ title.patronName.ru }}: {{ person.patronName }}
+            </div>
           </div>
         </div>
       </div>
@@ -75,8 +90,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 .modal-content {
   background-color: #fefefe;
