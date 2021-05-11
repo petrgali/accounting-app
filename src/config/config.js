@@ -22,7 +22,7 @@ export const config = {
             ru: "Отчество"
         },
         goodsList: {
-            ru: "Список выданых материальных ценностей"
+            ru: "Выданные материальные ценности"
         },
         itemNumber: {
             ru: "№ п/п"
@@ -37,4 +37,14 @@ export const config = {
             ru: "Итого"
         }
     },
+    buttons: {
+        removeHighlight: "снять выделение",
+        addRecord: "добавить",
+        saveRecord: "сохранить",
+        close: "закрыть",
+        cancel: "отмена",
+        lower: "меньше",
+        equal: "равно",
+        bigger: "больше"
+    }
 }

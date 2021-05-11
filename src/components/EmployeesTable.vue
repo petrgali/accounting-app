@@ -19,9 +19,9 @@
         "
       >
         <select class="select" v-model="filterOperator">
-          <option value="lower">меньше</option>
-          <option value="equal">равно</option>
-          <option value="bigger">больше</option>
+          <option value="lower">{{ buttonsTitle.lower }}</option>
+          <option value="equal">{{ buttonsTitle.equal }}</option>
+          <option value="bigger">{{ buttonsTitle.bigger }}</option>
         </select>
       </div>
       <input
@@ -30,9 +30,7 @@
         v-model="filterText"
         @input="filterTable"
       />
-      <button class="filter-button" @click="resetHighlight">
-        снять выделение
-      </button>
+      <Button :meta="removeHighlightButton" @click="resetHighlight" />
     </div>
 
     <ul class="responsive-table">
@@ -55,24 +53,34 @@
         :key="person.id"
         @click="selectRow"
         @contextmenu.prevent="ctxMenu"
-        @dblclick="doubleClickHandler"
+        @dblclick="$emit(`openPerson`, person.id)"
       >
         <TableRow :person="person" />
       </li>
     </ul>
+    <Button :meta="addRecordButton" @click="info" />
   </div>
 </template>
 
 <script>
-import { rawData } from "../config/dummyData";
 import TableRow from "./EmpoyeesTableRow";
 import { config } from "../config/config";
+import Button from "../components/Button";
 export default {
-  components: { TableRow },
+  components: { TableRow, Button },
+  props: ["rawData"],
   data() {
     return {
+      removeHighlightButton: {
+        title: config.buttons.removeHighlight,
+        class: "filter-button",
+      },
+      addRecordButton: {
+        title: config.buttons.addRecord,
+      },
       titles: config.titles,
-      data: rawData,
+      buttonsTitle: config.buttons,
+      data: this.rawData,
       highlighted: null,
       sort: {
         name: false,
@@ -85,6 +93,9 @@ export default {
     };
   },
   methods: {
+    info() {
+      alert(`it should add new records`);
+    },
     getRowId(e) {
       return e.target.id === "" ? +e.target.parentNode.id : +e.target.id;
     },
@@ -98,10 +109,7 @@ export default {
       this.highlighted = null;
     },
     ctxMenu(e) {
-      if (this.getRowId(e) === this.highlighted) alert(this.highlighted);
-    },
-    doubleClickHandler(e) {
-      alert(e.target);
+      if (this.getRowId(e) === this.highlighted) confirm(this.highlighted);
     },
     sortFullname() {
       this.data.sort((a, b) => {
@@ -146,17 +154,17 @@ export default {
       if (this.filterText)
         switch (this.filterSelect) {
           case this.titles.fullName.ru:
-            this.data = rawData.filter((person) =>
+            this.data = this.$props.rawData.filter((person) =>
               person.secondName.toLowerCase().includes(this.filterText)
             );
             break;
           case this.titles.countValue.ru:
-            this.data = rawData.filter((person) =>
+            this.data = this.$props.rawData.filter((person) =>
               this.filterWithOperator(person.goods.length, +this.filterText)
             );
             break;
           case this.titles.amount.ru:
-            this.data = rawData.filter((person) =>
+            this.data = this.$props.rawData.filter((person) =>
               this.filterWithOperator(
                 this.getTotalAmount(person),
                 +this.filterText
@@ -164,101 +172,9 @@ export default {
             );
         }
       else {
-        this.data = rawData;
+        this.data = this.$props.rawData;
       }
     },
   },
 };
 </script>
-
-<style>
-.container {
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-h2 {
-  font-size: 26px;
-  margin: 20px 0;
-  text-align: center;
-}
-h2 small {
-  font-size: 0.5em;
-}
-.filter {
-  display: flex;
-  width: 80%;
-  margin: auto;
-  justify-content: left;
-}
-.filter .select {
-  width: 100px;
-  min-width: 15%;
-  margin: auto 5px;
-}
-.filter-input {
-  width: 150px;
-  padding: 5px 5px;
-}
-.filter-button {
-  margin: auto 5px;
-}
-.table-row.selected {
-  background-color: rgb(49, 197, 20);
-  color: aliceblue;
-}
-.responsive-table li {
-  border-radius: 3px;
-  padding: 25px 30px;
-  display: flex;
-  width: 80%;
-  justify-content: space-between;
-  margin: auto auto 25px;
-}
-.responsive-table .table-header {
-  background-color: #95a5a6;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-}
-.responsive-table .table-row {
-  cursor: pointer;
-}
-.responsive-table .col-1 {
-  flex-basis: 40%;
-}
-.responsive-table .col-2 {
-  flex-basis: 20%;
-}
-.responsive-table .col-3 {
-  flex-basis: 40%;
-}
-/* .responsive-table .col-4 {
-  flex-basis: 25%;
-} */
-@media all and (max-width: 767px) {
-  .responsive-table .table-header {
-    display: none;
-  }
-  .responsive-table li {
-    display: block;
-  }
-  .responsive-table .col {
-    flex-basis: 100%;
-  }
-  .responsive-table .col {
-    display: flex;
-    padding: 10px 0;
-  }
-  .responsive-table .col:before {
-    color: #6c7a89;
-    padding-right: 10px;
-    content: attr(data-label);
-    flex-basis: 50%;
-    text-align: right;
-  }
-}
-</style>
