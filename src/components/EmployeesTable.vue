@@ -58,7 +58,7 @@
         <TableRow :person="person" />
       </li>
     </ul>
-    <Button :meta="addRecordButton" />
+    <Button :meta="addRecordButton" @click="info" />
   </div>
 </template>
 
@@ -93,6 +93,9 @@ export default {
     };
   },
   methods: {
+    info() {
+      alert(`it should add new records`);
+    },
     getRowId(e) {
       return e.target.id === "" ? +e.target.parentNode.id : +e.target.id;
     },

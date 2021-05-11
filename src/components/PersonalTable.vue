@@ -8,11 +8,17 @@
         <div class="col col-4"></div>
       </li>
       <li class="table-row" v-for="(good, idx) in person.goods" :key="good">
-        <div class="table-wrap" v-if="!editMode">
+        <div class="table-wrap" v-if="!edtitingRow(idx)">
           <div class="col col-1 left">{{ idx + 1 }}</div>
           <div class="col col-2 left">{{ good.item }}</div>
           <div class="col col-3 right">{{ good.itemCost }}</div>
           <div class="col col-4"></div>
+          <img
+            class="custom-button"
+            src="../assets/edit.png"
+            @click="editItem(idx)"
+            alt="edit"
+          />
           <img
             class="custom-button"
             src="../assets/trash.png"
@@ -20,10 +26,14 @@
             alt="remove"
           />
         </div>
-        <div class="table-wrap" v-if="editMode">
+        <div class="table-wrap" v-if="edtitingRow(idx)">
           <div class="col col-1 left">{{ idx + 1 }}</div>
-          <div class="col col-2 left"><input type="text" v-model="editedItem.name"/></div>
-          <div class="col col-3 right"><input type="text" v-model="editedItem.cost"/></div>
+          <div class="col col-2 left">
+            <input type="text" v-model="editignItem.name" />
+          </div>
+          <div class="col col-3 right">
+            <input type="text" v-model="editignItem.cost" />
+          </div>
           <div class="col col-4"></div>
         </div>
       </li>
@@ -31,17 +41,11 @@
         <div class="col col-5 right">{{ titles.totalCost.ru }}</div>
         <div class="col col-3 right">{{ totalCost }}</div>
         <div class="col col-4"></div>
-         <img v-if="!editMode"
-            class="custom-button"
-            src="../assets/edit.png"
-            @click="editItem(idx)"
-            alt="edit"
-          />
       </li>
     </ul>
     <Button v-if="!editMode" :meta="closeButton" @click="$emit(`closeModal`)" />
     <div v-if="editMode">
-      <Button :meta="saveButton" @click="editItem" />
+      <Button :meta="saveButton" @click="save" />
       <Button :meta="cancelButton" @click="editItem" />
     </div>
   </div>
@@ -70,18 +74,40 @@ export default {
       editMode: false,
       person: this.personData,
       titles: config.titles,
-      editedItem: {
+      editignItem: {
+        id: null,
         name: "",
-        cost: "",
+        cost: null,
       },
     };
   },
   methods: {
+    flushEditing() {
+      this.editignItem.id = null;
+      this.editignItem.name = "";
+      this.editignItem.cost = null;
+      this.editMode = !this.editMode;
+    },
+    save() {
+      this.person.goods[this.editignItem.id].name = this.editignItem.name;
+      this.person.goods[this.editignItem.id].itemCost = +this.editignItem.cost;
+      this.flushEditing();
+    },
     removeItem(id) {
       this.person.goods = this.person.goods.filter((_, idx) => idx !== id);
     },
-    editItem() {
-      this.editMode = !this.editMode;
+    editItem(id) {
+      if (this.editMode) {
+        this.flushEditing();
+      } else {
+        this.editignItem.id = id;
+        this.editignItem.name = this.person.goods[id].item;
+        this.editignItem.cost = this.person.goods[id].itemCost;
+        this.editMode = !this.editMode;
+      }
+    },
+    edtitingRow(idx) {
+      return idx == this.editignItem.id;
     },
   },
   computed: {
